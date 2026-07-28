@@ -1,0 +1,19 @@
+enum PaymentStatus {
+  PROCESSING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+model Payment {
+  id              String        @id @default(uuid()) @db.Uuid
+  rentalRequestId String        @unique @db.Uuid
+  rentalRequest   RentalRequest @relation(fields: [rentalRequestId], references: [id])
+  amount          Decimal
+  status          PaymentStatus @default(PROCESSING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("payments")
+}
