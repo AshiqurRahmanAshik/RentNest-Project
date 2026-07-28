@@ -4,6 +4,7 @@ model User{
     password String 
     role UserRole @default(TENANT)
     status UserStatus @default(ACTIVE)
+    profile Profile?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
