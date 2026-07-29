@@ -22,11 +22,25 @@ const getMyProfile = catchAsync(async (req: Request, res: Response, next: NextFu
   if (typeof verifiedToken === 'string') {
     throw new Error(verifiedToken);
   }
-  const userProfile = await userService.getMyProfileFromDB(verifiedToken.id);
+  const user = await userService.getMyProfileFromDB(verifiedToken.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'User profile fetched successfully',
-    data: { userProfile },
+    data: user,
   });
 });
-export const userController = { registerUser, getMyProfile };
+
+const updateMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user?.id as string;
+  const payload = req.body;
+
+  const updatedProfile = await userService.updateMyProfileIntoDB(userId, payload);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'User profile updated successfully',
+    data: { updatedProfile },
+  });
+});
+
+export const userController = { registerUser, getMyProfile, updateMyProfile };
