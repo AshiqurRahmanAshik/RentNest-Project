@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Response } from 'express';
 
 type TMeta = {
   page: number;
@@ -7,7 +7,6 @@ type TMeta = {
 };
 
 type TResponseData<T> = {
-  success: boolean;
   statusCode: number;
   message: string;
   data: T;
@@ -16,7 +15,7 @@ type TResponseData<T> = {
 
 export const sendResponse = <T>(res: Response, data: TResponseData<T>) => {
   res.status(data.statusCode).json({
-    success: data.success,
+    success: true,
     statusCode: data.statusCode,
     message: data.message,
     data: data.data,
