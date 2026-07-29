@@ -6,7 +6,9 @@ import { UserRole } from '../../../generated/prisma/enums';
 
 const registerUserIntoDB = async (payload: IRegisterUserPayload) => {
   const { name, email, password, role, phone, address, profileImage } = payload;
-
+  if (role !== UserRole.TENANT && role !== UserRole.LANDLORD) {
+    throw new Error('Invalid role');
+  }
   const isUserExist = await prisma.user.findUnique({
     where: { email },
   });
