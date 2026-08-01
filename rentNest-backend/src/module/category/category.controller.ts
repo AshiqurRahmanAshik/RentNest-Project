@@ -3,6 +3,8 @@ import { catchAsync } from '../../utils/catchAsync';
 import { categoryService } from './category.service';
 import { sendResponse } from '../../utils/sendResponse';
 import httpStatus from 'http-status';
+import { rentalService } from '../rental/rental.service';
+import { landlordService } from '../landlord/landlord.service';
 
 const createCategory = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const payload = req.body;
@@ -60,6 +62,22 @@ const deleteCategory = catchAsync(async (req: Request, res: Response, next: Next
     statusCode: httpStatus.OK,
     message: 'Category deleted successfully',
     data: null,
+  });
+});
+
+const updateRentalRequest = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const landlordId = req.user?.id;
+  const { requestId } = req.params;
+  const payload = req.body;
+  const result = await landlordService.updateRentalRequestStatusIntoDB(
+    landlordId as string,
+    requestId as string,
+    payload,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Rental Request Status Updated',
+    data: result,
   });
 });
 export const categoryController = {

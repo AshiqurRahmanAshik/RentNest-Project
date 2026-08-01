@@ -11,4 +11,4 @@ router.get('/', auth(UserRole.TENANT), rentalController.getMyRentalRequests);
 
 router.get('/:id', auth(UserRole.TENANT), rentalController.getSingleRentalRequest);
 
-export const rentalRoute = router;
+export const rentalRoutes = router;

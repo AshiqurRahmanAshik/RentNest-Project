@@ -9,7 +9,18 @@ const createRentalRequestIntoDB = async (tenantId: string, payload: ICreateRenta
       id: propertyId,
     },
   });
+  const existingRequest = await prisma.rentalRequest.findUnique({
+    where: {
+      tenantId_propertyId: {
+        tenantId,
+        propertyId,
+      },
+    },
+  });
 
+  if (existingRequest) {
+    throw new Error('You already requested this property');
+  }
   const rentalRequest = await prisma.rentalRequest.create({
     data: {
       tenantId,

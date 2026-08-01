@@ -1,11 +1,17 @@
 import { prisma } from '../../lib/prisma';
-import {
-  IProperty,
-  IUpdatePropertyPayload,
-  IUpdateRentalRequestPayload,
-} from './landlord.interface';
+import { IProperty, IUpdatePropertyPayload, IUpdateRentalRequestPayload } from './landlord.interface';
 
 const createPropertyIntoDB = async (landlordId: string, payload: IProperty) => {
+  const propertyAlreadyExists = await prisma.property.findFirst({
+    where: {
+      landlordId,
+      title: payload.title,
+    },
+  });
+
+  if (propertyAlreadyExists) {
+    throw new Error('You have already listed this Property');
+  }
   const property = await prisma.property.create({
     data: {
       ...payload,
@@ -13,6 +19,7 @@ const createPropertyIntoDB = async (landlordId: string, payload: IProperty) => {
     },
     include: {
       category: true,
+      reviews: true,
     },
   });
   return property;
@@ -26,6 +33,7 @@ const getMyPropertiesFromDB = async (landlordId: string) => {
 
     include: {
       category: true,
+      reviews: true,
     },
   });
 
@@ -42,17 +50,14 @@ const getSinglePropertyFromDB = async (landlordId: string, propertyId: string) =
     include: {
       category: true,
       rentalRequests: true,
+      reviews: true,
     },
   });
 
   return property;
 };
 
-const updatePropertyIntoDB = async (
-  landlordId: string,
-  propertyId: string,
-  payload: IUpdatePropertyPayload,
-) => {
+const updatePropertyIntoDB = async (landlordId: string, propertyId: string, payload: IUpdatePropertyPayload) => {
   await prisma.property.findFirstOrThrow({
     where: {
       id: propertyId,
@@ -66,6 +71,11 @@ const updatePropertyIntoDB = async (
     },
 
     data: payload,
+    include: {
+      category: true,
+      rentalRequests: true,
+      reviews: true,
+    },
   });
 
   return updatedProperty;
@@ -110,6 +120,26 @@ const getRentalRequestsFromDB = async (landlordId: string) => {
   return requests;
 };
 
+const getARentalRequestFromDB = async (requestId: string) => {
+  const request = await prisma.rentalRequest.findUnique({
+    where: {
+      id: requestId,
+    },
+
+    include: {
+      property: true,
+
+      tenant: {
+        include: {
+          profile: true,
+        },
+      },
+    },
+  });
+
+  return request;
+};
+
 const updateRentalRequestStatusIntoDB = async (
   landlordId: string,
   requestId: string,
@@ -144,4 +174,5 @@ export const landlordService = {
   deletePropertyFromDB,
   getRentalRequestsFromDB,
   updateRentalRequestStatusIntoDB,
+  getARentalRequestFromDB,
 };

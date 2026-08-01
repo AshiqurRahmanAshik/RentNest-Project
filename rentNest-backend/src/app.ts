@@ -8,6 +8,8 @@ import { categoryRoutes } from './module/category/category.routes';
 import { notFound } from './middlewares/notFound';
 import { globalErrorHandler } from './middlewares/globalErrorHandler';
 import { reviewRoutes } from './module/review/review.routes';
+import { landlordRoutes } from './module/landlord/landlord.route';
+import { rentalRoutes } from './module/rental/rental.routes';
 
 const app: Application = express();
 
@@ -29,8 +31,9 @@ app.get('/', async (req: Request, res: Response) => {
 app.use('/api/auth', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/landlord', landlordRoutes);
+app.use('/api/rental', rentalRoutes);
 app.use('/api/reviews', reviewRoutes);
-
 app.use(notFound);
 app.use(globalErrorHandler);
 export default app;
