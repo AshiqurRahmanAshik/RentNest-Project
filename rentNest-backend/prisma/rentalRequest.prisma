@@ -23,5 +23,6 @@ model RentalRequest {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([tenantId, propertyId])
   @@map("rentalRequests")
 }

@@ -7,6 +7,7 @@ import { authRoutes } from './module/auth/auth.routes';
 import { categoryRoutes } from './module/category/category.routes';
 import { notFound } from './middlewares/notFound';
 import { globalErrorHandler } from './middlewares/globalErrorHandler';
+import { reviewRoutes } from './module/review/review.routes';
 
 const app: Application = express();
 
@@ -27,7 +28,8 @@ app.get('/', async (req: Request, res: Response) => {
 
 app.use('/api/auth', userRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/category', categoryRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.use(notFound);
 app.use(globalErrorHandler);
