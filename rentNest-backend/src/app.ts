@@ -10,6 +10,7 @@ import { globalErrorHandler } from './middlewares/globalErrorHandler';
 import { reviewRoutes } from './module/review/review.routes';
 import { landlordRoutes } from './module/landlord/landlord.route';
 import { rentalRoutes } from './module/rental/rental.routes';
+import { paymentRoutes } from './module/payment/payment.routes';
 
 const app: Application = express();
 
@@ -34,6 +35,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/landlord', landlordRoutes);
 app.use('/api/rental', rentalRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/payments', paymentRoutes);
 app.use(notFound);
 app.use(globalErrorHandler);
 export default app;
