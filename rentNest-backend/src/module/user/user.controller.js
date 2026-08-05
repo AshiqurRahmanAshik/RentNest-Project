@@ -1,0 +1,39 @@
+import { catchAsync } from '../../utils/catchAsync';
+import { userService } from './user.service';
+import { sendResponse } from '../../utils/sendResponse';
+import httpStatus from 'http-status';
+import jwt from 'jsonwebtoken';
+import config from '../../config';
+const registerUser = catchAsync(async (req, res, next) => {
+    const payload = req.body;
+    const user = await userService.registerUserIntoDB(payload);
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        message: 'User Registered Successfully',
+        data: { user },
+    });
+});
+const getMyProfile = catchAsync(async (req, res, next) => {
+    const { accessToken } = req.cookies;
+    const verifiedToken = jwt.verify(accessToken, config.jwt_access_secret);
+    if (typeof verifiedToken === 'string') {
+        throw new Error(verifiedToken);
+    }
+    const user = await userService.getMyProfileFromDB(verifiedToken.id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'User profile fetched successfully',
+        data: user,
+    });
+});
+const updateMyProfile = catchAsync(async (req, res, next) => {
+    const userId = req.user?.id;
+    const payload = req.body;
+    const updatedProfile = await userService.updateMyProfileIntoDB(userId, payload);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'User profile updated successfully',
+        data: { updatedProfile },
+    });
+});
+export const userController = { registerUser, getMyProfile, updateMyProfile };
